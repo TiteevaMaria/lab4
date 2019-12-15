@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>trains</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <table id="table" border="1">
+
+        <thead>
+        <tr>
+            <td>Номер поезда</td>
+            <td>Время прибытия</td>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr v-for="train in trains">
+            <td v-text="train.name">Oranges</td>
+            <td v-text="train.date">0.99</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    var ws = new WebSocket(`ws://${window.location.host}/ws`);
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            trains: [
+                {name: '0', date: '0'}
+            ],
+            train: {name: '', date: ''}
+        },
+        mounted: async function () {
+            ws.onmessage = async (r) => {
+                this.trains = JSON.parse(r.data)
+            };
+            setTimeout(function () {
+                ws.send("")
+            }, 500);
+        }
+    })
+</script>
+</body>
+</html>
