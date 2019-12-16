@@ -21,7 +21,7 @@ public class DBUtils
         String query = "INSERT INTO 'Trains' ('Name', 'Time') VALUES (?,?)";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, train.name);
-        statement.setTime(2, train.time);
+        statement.setTimestamp(2, train.time);
         statement.execute();
     }
 
@@ -35,12 +35,12 @@ public class DBUtils
     public static Set<Train> readDB() throws SQLException
     {
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM Trains WHERE Time > " + System.currentTimeMillis());
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM Trains WHERE Time > " + (System.currentTimeMillis() + 10800000));
         Set<Train> trains = new HashSet<>();
         while (resultSet.next()) {
             Train train = new Train();
             train.name = resultSet.getString("Name");
-            train.time = resultSet.getTime("Time");
+            train.time = resultSet.getTimestamp("Time");
             trains.add(train);
         }
         return trains;

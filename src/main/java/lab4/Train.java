@@ -3,12 +3,13 @@ package lab4;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 
 
 public class Train implements Serializable
 {
     public String name = "";
-    public Time time = new Time(0);
+    public Timestamp time = new Timestamp(0);
 
     @Override
     public String toString()

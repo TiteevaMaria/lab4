@@ -5,6 +5,7 @@ import lab4.Train;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
@@ -39,7 +40,7 @@ public class sourceController
             Thread.sleep(12000);
             Train train = new Train();
             train.name = String.valueOf(random.nextInt(10000));
-            train.time = new Time(System.currentTimeMillis() + random.nextInt(600000));
+            train.time = new Timestamp(System.currentTimeMillis() + random.nextInt(18000000) + 10800000); //5 + 3
             System.out.println("Created train " + train);
             queue.add(train);
         }
