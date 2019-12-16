@@ -1,16 +1,18 @@
 package lab4;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Time;
 
-public class Train implements Serializable 
+
+public class Train implements Serializable
 {
     public String name = "";
-    public Date date = new Date();
+    public Time time = new Time(0);
 
     @Override
     public String toString()
-	{
-        return "Train{" + "name='" + name + '\'' + ", date=" + date + '}';
+    {
+        return "Train{" + "name='" + name + '\'' + ", time=" + time + '}';
     }
 }

@@ -6,10 +6,9 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 @SpringBootApplication(scanBasePackages = {"lab4.pointer"})
 @EnableWebSocket
-public class pointer 
+public class pointer
 {
-    public static void main(String[] args)
-	{
+    public static void main(String[] args) {
         SpringApplication.run(pointer.class, args);
     }
 }

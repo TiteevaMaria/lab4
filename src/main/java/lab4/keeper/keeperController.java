@@ -1,51 +1,67 @@
 package lab4.keeper;
 
 import com.hazelcast.core.HazelcastInstance;
+import lab4.DBUtils;
 import lab4.Train;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.Arrays;
-import java.util.Set;
+import java.sql.SQLException;
 import java.util.concurrent.BlockingQueue;
 
 @org.springframework.stereotype.Controller
-public class keeperController 
+public class keeperController
 {
-    final HazelcastInstance hazelcastInstance; 
-    private BlockingQueue<Train> queue; 
-    private Set<Train> trainsSet; 
+    final HazelcastInstance hazelcastInstance;
+    private BlockingQueue<Train> queue;
 
-    
-    public keeperController(@Qualifier("hazelcastInstance") HazelcastInstance hazelcastInstance) 
-	{
+    public keeperController(@Qualifier("hazelcastInstance") HazelcastInstance hazelcastInstance)
+    {
         this.hazelcastInstance = hazelcastInstance;
         this.queue = hazelcastInstance.getQueue("trainsQueue");
-        this.trainsSet = hazelcastInstance.getSet("trainsSet");
-        fromQueueToSet();
+        try
+        {
+            DBUtils.connectDB();
+        }
+        catch (ClassNotFoundException | SQLException e)
+        {
+            e.printStackTrace();
+        }
+        fromQueueToDB();
     }
 
-    public void fromQueueToSet() 
-	{
+    public void fromQueueToDB()
+    {
         new Thread(() -> {
-            while (true) 
-			{
-                if (!queue.isEmpty()) 
-				{
+            try
+            {
+                DBUtils.createDB();
+            }
+            catch (ClassNotFoundException | SQLException e)
+            {
+                e.printStackTrace();
+            }
+            while (true)
+            {
+                if (!queue.isEmpty())
+                {
                     for (Train train : queue)
-					{
-                        System.out.println("Train " + train);
-                        trainsSet.add(queue.poll());
-                        hazelcastInstance.<String>getTopic("newTrain").publish(""); 
+                    {
+                        try
+                        {
+                            DBUtils.writeDB(queue.poll());
+                        }
+                        catch (SQLException e)
+                        {
+                            e.printStackTrace();
+                        }
                     }
-                    System.out.println("set " + Arrays.toString(trainsSet.toArray()));
                 }
-
-                try 
-				{
-                    Thread.sleep(2000); 
-                } 
-				catch (InterruptedException e) 
-				{
+                hazelcastInstance.<String>getTopic("newTrain").publish("");
+                try
+                {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e)
+                {
                     e.printStackTrace();
                 }
             }
